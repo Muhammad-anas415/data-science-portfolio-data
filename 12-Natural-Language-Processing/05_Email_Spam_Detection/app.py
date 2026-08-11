@@ -1,12 +1,14 @@
 import streamlit as st
 import joblib
+from pathlib import Path
 
+
+# Get the folder containing app.py
+BASE_DIR = Path(__file__).resolve().parent
 
 # Load model and vectorizer
-model = joblib.load("model.pkl")
-vectorizer = joblib.load("vectorizer.pkl")
-
-
+model = joblib.load(BASE_DIR / "model.pkl")
+vectorizer = joblib.load(BASE_DIR / "vectorizer.pkl")
 # Page configuration
 st.set_page_config(
     page_title="Spam Email Detector",
