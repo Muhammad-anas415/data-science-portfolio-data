@@ -2,20 +2,19 @@ import streamlit as st
 import joblib
 from pathlib import Path
 
-
 # Get the folder containing app.py
 BASE_DIR = Path(__file__).resolve().parent
 
-# Load model and vectorizer
-model = joblib.load(BASE_DIR / "model.pkl")
-vectorizer = joblib.load(BASE_DIR / "vectorizer.pkl")
+# Load trained model and TF-IDF vectorizer
+model = joblib.load(BASE_DIR / "spam_model.pkl")
+vectorizer = joblib.load(BASE_DIR / "tfidf_vectorizer.pkl")
+
 # Page configuration
 st.set_page_config(
     page_title="Spam Email Detector",
     page_icon="📧",
     layout="centered"
 )
-
 
 # Title
 st.title("📧 Spam Email Detector")
@@ -25,48 +24,39 @@ st.write(
     "predict whether it is spam or not spam."
 )
 
-
-# Text input
+# Email input
 email = st.text_area(
     "Enter your email:",
     height=250,
     placeholder="Paste your email message here..."
 )
 
-
-# Prediction button
+# Prediction
 if st.button("🔍 Check Email"):
 
     if email.strip() == "":
         st.warning("Please enter an email message.")
 
     else:
-
-        # Transform email using trained TF-IDF
+        # Convert email into TF-IDF features
         email_vector = vectorizer.transform([email])
 
-        # Prediction
+        # Make prediction
         prediction = model.predict(email_vector)[0]
 
-        # Probability
+        # Get prediction probabilities
         probability = model.predict_proba(email_vector)[0]
 
+        # Calculate confidence
         confidence = max(probability) * 100
 
+        # Convert prediction to string
+        prediction = str(prediction).lower()
 
         # Display result
-        if prediction.lower() == "spam":
-
+        if prediction == "spam":
             st.error("🚨 SPAM EMAIL")
-
-            st.write(
-                f"Confidence: **{confidence:.2f}%**"
-            )
-
         else:
-
             st.success("✅ NOT SPAM")
 
-            st.write(
-                f"Confidence: **{confidence:.2f}%**"
-            )
+        st.write(f"Confidence: **{confidence:.2f}%**")
