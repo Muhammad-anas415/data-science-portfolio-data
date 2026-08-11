@@ -1,0 +1,6 @@
+streamlit
+joblib
+scikit-learn
+beautifulsoup4
+better-profanity
+nltk
